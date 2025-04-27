@@ -33,17 +33,26 @@
     </header>
 
     <!-- Hero Section -->
-    <section style="background: url('{{ asset('img/banner_bg.jpeg') }}') no-repeat center center; background-size: cover;" class="text-center py-64 relative">
-        <h1 class="text-2xl md:text-4xl font-bold text-blue-600">PUSKESMAS PEMBANTU DESA SELOTONG</h1>
-        <p class="text-gray-600 mt-2">Layanan Kesehatan <span class="text-orange-500 font-bold">Toko Obat</span></p>
-        <button class="mt-6 px-6 py-2 bg-white border border-blue-500 text-blue-500 rounded hover:bg-blue-50">Lihat Produk & Layanan Kami</button>
+    <section style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('img/banner_bg.jpeg') }}') no-repeat center center; background-size: cover;" class="text-center py-64 relative">
+        <h1 class="text-2xl md:text-4xl font-bold text-gray-200">{{ $informasi->nama_instansi }}</h1>
+        <p class="text-gray-200 mt-2">Layanan Kesehatan <span class="text-orange-500 font-bold">Toko Obat</span></p>
     </section>
 
     <!-- Galeri -->
     <section class="py-12 bg-white">
         <div class="max-w-6xl mx-auto">
             <h2 class="text-2xl font-bold mb-8 text-center">Galeri</h2>
-            <div class="bg-gray-100 h-64 flex items-center justify-center">Galeri Foto</div>
+            <div class="grid md:grid-cols-3 gap-4">
+                @if($galeri->isEmpty())
+                <p>Tidak ada gambar dalam galeri.</p>
+                @else
+                @foreach ($galeri as $g)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <img src="{{ asset('storage/'.$g->foto) }}" class="w-full h-48 object-cover">
+                </div>
+                @endforeach
+                @endif
+            </div>
         </div>
     </section>
 
@@ -52,11 +61,10 @@
         <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
             <div>
                 <h2 class="text-2xl font-bold mb-4">Sekilas Tentang Kami</h2>
-                <p class="mb-4">Pelayanan Kesehatan dengan profil perusahaan mini.</p>
-                <button class="bg-white text-purple-700 px-4 py-2 rounded hover:bg-gray-100">Profil Perusahaan</button>
+                <p class="mb-4 text-justify">Puskesmas Pembantu Desa Selotong terletak di Kecamatan Secanggang, Kabupaten Langkat, Sumatera Utara. Sebagai bagian dari sistem pelayanan kesehatan primer, Puskesmas Pembantu (Pustu) berfungsi untuk mendekatkan layanan kesehatan kepada masyarakat di daerah yang jauh dari pusat layanan kesehatan utama</p>
             </div>
             <div>
-                <img src="/path-to-about-photo.jpg" alt="Tentang Kami" class="rounded-lg shadow-lg">
+                <img src="{{ asset('img/about.jpg') }}" alt="Tentang Kami" class="rounded-lg shadow-lg">
             </div>
         </div>
     </section>
@@ -66,13 +74,42 @@
         <div class="max-w-6xl mx-auto text-center">
             <h2 class="text-2xl font-bold mb-4">Kontak Kami</h2>
             <p class="mb-6">Jika Anda memiliki pertanyaan atau kritik, klik tombol di bawah ini.</p>
-            <button class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">Kontak Kami</button>
+            @if (session('success'))
+            <div class="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md max-w-md mx-auto" role="alert">
+                <p class="font-bold">{{ session('success') }}</p>
+            </div>
+            @endif
+            @if (session('error'))
+            <div class="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md max-w-md mx-auto" role="alert">
+                <p class="font-bold">{{ session('error') }}</p>
+            </div>
+            @endif
+
+            <form action="{{ route('kirim-pesan') }}" method="POST" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+                @csrf
+                <div class="mb-4">
+                    <label for="nama" class="block text-gray-700 font-bold mb-2">Dari:</label>
+                    <input type="text" id="nama" name="nama" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
+                    <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-4">
+                    <label for="pesan" class="block text-gray-700 font-bold mb-2">Pesan:</label>
+                    <textarea id="pesan" name="pesan" rows="4" class="w-full px-3 py-2 border rounded-lg" required></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Kirim Pesan</button>
+                </div>
+            </form>
+
         </div>
     </section>
 
     <!-- Map -->
     <section class="h-96">
-        <iframe class="w-full h-full" src="https://maps.google.com/maps?q=Selotong&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen></iframe>
+        <iframe class="w-full h-full" src="{{ $informasi->url_map }}" allowfullscreen></iframe>
     </section>
 
     <!-- Footer -->
@@ -80,15 +117,17 @@
         <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
                 <h3 class="font-bold mb-2">TOKO OBAT</h3>
-                <p>Website Resmi Toko Obat Desa Selotong.</p>
+                <p>Website Resmi Toko Obat {{ $informasi->nama_instansi }}</p>
             </div>
             <div>
                 <h3 class="font-bold mb-2">Lokasi</h3>
-                <p>Kelurahan Selotong, Kecamatan Sebatik, Indonesia</p>
+                <p>{{ $informasi->alamat }}</p>
             </div>
             <div>
                 <h3 class="font-bold mb-2">Hubungi Kami</h3>
-                <p>Email: info@tokoobatselotong.com</p>
+                <p>Email: {{ $informasi->email }}</p>
+                <p>No Telp: {{ $informasi->no_hp }}</p>
+                <p>Facebook: {{ $informasi->url_facebook }}</p>
             </div>
         </div>
         <div class="mt-8 text-center text-sm">&copy; 2025 Toko Obat. All rights reserved.</div>

@@ -17,7 +17,7 @@ class PesanMasukResource extends Resource
 {
     protected static ?string $model = PesanMasuk::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-inbox';
 
     public static function form(Form $form): Form
     {
@@ -30,13 +30,9 @@ class PesanMasukResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('judul')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('pesan')
-                    ->required()
-                    ->columnSpanFull(),
                 Forms\Components\DatePicker::make('tanggal')
+                    ->required(),
+                Forms\Components\Textarea::make('pesan')
                     ->required(),
             ]);
     }
@@ -45,11 +41,11 @@ class PesanMasukResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('no')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('judul')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal')
                     ->date()
@@ -67,7 +63,7 @@ class PesanMasukResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

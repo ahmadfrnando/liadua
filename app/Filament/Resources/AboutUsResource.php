@@ -16,20 +16,40 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class AboutUsResource extends Resource
 {
     protected static ?string $model = AboutUs::class;
+    protected static ?string $navigationLabel = 'Informasi Puskesmas';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-information-circle';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('nama_instansi')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\Textarea::make('deskripsi')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('judul')
+                Forms\Components\TextInput::make('foto')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('gambar')
+                Forms\Components\TextInput::make('alamat')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('url_facebook')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('url_instagram')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('url_map')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('no_hp')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -39,18 +59,15 @@ class AboutUsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('judul')
+                Tables\Columns\TextColumn::make('nama_instansi')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('gambar')
+                Tables\Columns\ImageColumn::make('foto'),
+                Tables\Columns\TextColumn::make('alamat')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('no_hp')
+                    ->searchable(),
             ])
             ->filters([
                 //

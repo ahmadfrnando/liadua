@@ -17,7 +17,7 @@ class ObatKeluarResource extends Resource
 {
     protected static ?string $model = ObatKeluar::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-left-circle';
 
     public static function form(Form $form): Form
     {
